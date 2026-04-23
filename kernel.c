@@ -7,6 +7,7 @@
 #include "kmalloc.h"  
 #include "timer.h"
 #include "terminal.h"
+#include "speaker.h"
 
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH   80
@@ -64,6 +65,10 @@ static void boot_screen(void) {
     print_centered("'help' yaz - komandalar ucun");
 
     terminal_putchar('\n');
+    /* boot səsi — iki qısa bip */
+speaker_beep(800, 100);
+sleep_ms(50);
+speaker_beep(1200, 150);
 }
 
 static uint8_t make_color(uint8_t fg, uint8_t bg) {

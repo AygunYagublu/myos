@@ -5,7 +5,7 @@ LD = i686-linux-gnu-gcc
 CFLAGS  = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32
 LDFLAGS = -ffreestanding -O2 -nostdlib -m32 -lgcc
 
-OBJS = boot.o gdt_flush.o gdt.o idt_flush.o idt.o isr.o timer.o keyboard.o kmalloc.o shell.o kernel.o
+OBJS = boot.o gdt_flush.o gdt.o idt_flush.o idt.o isr.o timer.o keyboard.o kmalloc.o speaker.o shell.o kernel.o
 
 myos.bin: $(OBJS) linker.ld
 	$(LD) -T linker.ld -o $@ $(LDFLAGS) $(OBJS)

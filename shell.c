@@ -4,6 +4,7 @@
 #include "terminal.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "speaker.h"
 
 #define BUFFER_SIZE 256
 
@@ -93,6 +94,10 @@ terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 terminal_print("- metn goster (echo salam)\n");
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
     terminal_print("- nece saniye ishleyir\n");
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  beep    ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- bip sesi\n");
 }
 
 static void cmd_about(void) {
@@ -188,6 +193,11 @@ static void cmd_sysinfo(void) {
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 }
 
+static void cmd_beep(void) {
+    terminal_print("\n  bip!\n");
+    speaker_beep(1000, 200);
+}
+
 static void cmd_reboot(void) {
     terminal_set_color(COLOR_LIGHT_RED, COLOR_BLACK);
     terminal_print("\nYeniden bashlanir...\n");
@@ -256,6 +266,8 @@ static void execute(void) {
     cmd_date();
 }  else if (streq(buffer, "sysinfo")) {
     cmd_sysinfo();}
+     else if (streq(buffer, "beep")) {
+    cmd_beep();}
 
 else if (buffer[0]=='e' && buffer[1]=='c' && buffer[2]=='h' && buffer[3]=='o' && buffer[4]==' ') {
     cmd_echo(buffer);}
