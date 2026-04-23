@@ -75,6 +75,18 @@ static void cmd_help(void) {
     terminal_print("- yaddash testi\n");
     terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
     terminal_print("  uptime  ");
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  version ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- kernel versiyasi\n");
+terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  date    ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- boot-dan kecen vaxt\n");
+terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  echo    ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- metn goster (echo salam)\n");
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
     terminal_print("- nece saniye ishleyir\n");
 }
@@ -92,6 +104,44 @@ static void cmd_about(void) {
     terminal_print("  - kmalloc/kfree\n");
     terminal_print("  - Rengli shell\n");
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+}
+
+static void cmd_version(void) {
+    terminal_print("\n");
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  MyOS v0.1.0\n");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("  Build: C (freestanding) + NASM + GRUB\n");
+    terminal_print("  Arch:  x86 (32-bit protected mode)\n");
+}
+
+static void cmd_echo(const char* input) {
+    /* "echo " dan sonraki hisseni goster */
+    const char* msg = input + 5;
+    terminal_print("\n  ");
+    terminal_set_color(COLOR_YELLOW, COLOR_BLACK);
+    terminal_print(msg);
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("\n");
+}
+
+static void cmd_date(void) {
+    uint32_t secs  = timer_get_seconds();
+    uint32_t mins  = secs / 60;
+    uint32_t hours = mins / 60;
+    secs  = secs % 60;
+    mins  = mins % 60;
+
+    terminal_print("\n  Kernel vaxti (boot-dan):  ");
+    terminal_set_color(COLOR_YELLOW, COLOR_BLACK);
+    print_num(hours);
+    terminal_print("s ");
+    print_num(mins);
+    terminal_print("d ");
+    print_num(secs);
+    terminal_print("s");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("\n");
 }
 
 static void cmd_reboot(void) {
@@ -156,7 +206,14 @@ static void execute(void) {
         cmd_memtest();
     } else if (streq(buffer, "uptime")) {
         cmd_uptime();
-    } else {
+    } else if (streq(buffer, "version")) {
+    cmd_version();
+} else if (streq(buffer, "date")) {
+    cmd_date();
+} else if (buffer[0]=='e' && buffer[1]=='c' && buffer[2]=='h' && buffer[3]=='o' && buffer[4]==' ') {
+    cmd_echo(buffer);}
+    
+    else {
         terminal_set_color(COLOR_LIGHT_RED, COLOR_BLACK);
         terminal_print("  bilinmeyen komanda: ");
         terminal_print(buffer);
