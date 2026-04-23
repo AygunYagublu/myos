@@ -36,10 +36,25 @@ void terminal_init(void) {
             vga_buffer[y * VGA_WIDTH + x] = make_entry(' ', terminal_color);
 }
 
+static void terminal_scroll(void) {
+    /* bütün sətirləri bir yuxarı köçür */
+    for (size_t y = 0; y < VGA_HEIGHT - 1; y++)
+        for (size_t x = 0; x < VGA_WIDTH; x++)
+            vga_buffer[y * VGA_WIDTH + x] = vga_buffer[(y + 1) * VGA_WIDTH + x];
+
+    /* son sətiri təmizlə */
+    for (size_t x = 0; x < VGA_WIDTH; x++)
+        vga_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = make_entry(' ', terminal_color);
+
+    terminal_row = VGA_HEIGHT - 1;
+}
+
 void terminal_putchar(char c) {
     if (c == '\n') {
         terminal_col = 0;
         terminal_row++;
+        if (terminal_row >= VGA_HEIGHT)
+            terminal_scroll();
         return;
     }
 
@@ -55,6 +70,8 @@ void terminal_putchar(char c) {
     if (++terminal_col >= VGA_WIDTH) {
         terminal_col = 0;
         terminal_row++;
+        if (terminal_row >= VGA_HEIGHT)
+            terminal_scroll();
     }
 }
 
