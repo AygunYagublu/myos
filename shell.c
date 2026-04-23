@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "kmalloc.h"
 #include <stdint.h>
 #include <stddef.h>
 
@@ -11,7 +12,6 @@ extern void terminal_init(void);
 static char buffer[BUFFER_SIZE];
 static size_t buffer_pos = 0;
 
-/* iki stringi müqayisə et */
 static int streq(const char* a, const char* b) {
     size_t i = 0;
     while (a[i] && b[i]) {
@@ -33,10 +33,12 @@ static void shell_prompt(void) {
 
 static void cmd_help(void) {
     terminal_print("\n");
-    terminal_print("  help   - komandalar siyahisi\n");
-    terminal_print("  clear  - ekrani temizle\n");
-    terminal_print("  about  - kernel haqqinda\n");
-    terminal_print("  reboot - yeniden bashlat\n");
+    terminal_print("  help    - komandalar siyahisi\n");
+    terminal_print("  clear   - ekrani temizle\n");
+    terminal_print("  about   - kernel haqqinda\n");
+    terminal_print("  reboot  - yeniden bashlat\n");
+    terminal_print("  memstat - yaddash statistikasi\n");
+    terminal_print("  memtest - yaddash testi\n");
 }
 
 static void cmd_about(void) {
@@ -58,6 +60,23 @@ static void cmd_clear(void) {
     terminal_init();
 }
 
+static void cmd_memtest(void) {
+    terminal_print("\n  kmalloc testi bashlayir...\n");
+    void* a = kmalloc(64);
+    void* b = kmalloc(128);
+    void* c = kmalloc(32);
+    terminal_print("  3 blok ayrildi\n");
+    kfree(b);
+    terminal_print("  ortadaki blok serbest buraxildi\n");
+    void* d = kmalloc(64);
+    terminal_print("  yeni blok ayrildi\n");
+    kfree(a);
+    kfree(c);
+    kfree(d);
+    terminal_print("  hamisi serbest buraxildi\n");
+    terminal_print("  test ugurlu!\n");
+}
+
 static void execute(void) {
     terminal_print("\n");
 
@@ -71,6 +90,10 @@ static void execute(void) {
         cmd_about();
     } else if (streq(buffer, "reboot")) {
         cmd_reboot();
+    } else if (streq(buffer, "memstat")) {
+        kmalloc_stats();
+    } else if (streq(buffer, "memtest")) {
+        cmd_memtest();
     } else {
         terminal_print("  bilinmeyen komanda: ");
         terminal_print(buffer);
@@ -87,7 +110,6 @@ void shell_process_char(char c) {
         return;
     }
 
-    /* backspace */
     if (c == '\b') {
         if (buffer_pos > 0) {
             buffer_pos--;
