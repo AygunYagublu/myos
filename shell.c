@@ -98,6 +98,10 @@ terminal_print("- metn goster (echo salam)\n");
 terminal_print("  beep    ");
 terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 terminal_print("- bip sesi\n");
+terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  color   ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- shell rengini deyish (color red)\n");
 }
 
 static void cmd_about(void) {
@@ -198,6 +202,48 @@ static void cmd_beep(void) {
     speaker_beep(1000, 200);
 }
 
+static void cmd_color(const char* input) {
+    /* "color " dan sonraki hisseni al */
+    const char* arg = input + 6;
+
+    if (arg[0] == '\0') {
+        terminal_print("\n");
+        terminal_set_color(COLOR_LIGHT_RED,   COLOR_BLACK); terminal_print("  red    ");
+        terminal_set_color(COLOR_LIGHT_GREEN, COLOR_BLACK); terminal_print("green  ");
+        terminal_set_color(COLOR_LIGHT_CYAN,  COLOR_BLACK); terminal_print("cyan   ");
+        terminal_set_color(COLOR_YELLOW,      COLOR_BLACK); terminal_print("yellow ");
+        terminal_set_color(COLOR_PINK,        COLOR_BLACK); terminal_print("pink   ");
+        terminal_set_color(COLOR_WHITE,       COLOR_BLACK); terminal_print("white\n");
+        terminal_print("\n  istifade: color red\n");
+        terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+        return;
+    }
+
+    /* rəngi seç */
+    uint8_t chosen = COLOR_WHITE;
+    int found = 1;
+
+    if      (streq(arg, "red"))    chosen = COLOR_LIGHT_RED;
+    else if (streq(arg, "green"))  chosen = COLOR_LIGHT_GREEN;
+    else if (streq(arg, "cyan"))   chosen = COLOR_LIGHT_CYAN;
+    else if (streq(arg, "yellow")) chosen = COLOR_YELLOW;
+    else if (streq(arg, "pink"))   chosen = COLOR_PINK;
+    else if (streq(arg, "white"))  chosen = COLOR_WHITE;
+    else if (streq(arg, "gray"))   chosen = COLOR_GRAY;
+    else if (streq(arg, "blue"))   chosen = COLOR_LIGHT_BLUE;
+    else found = 0;
+
+    if (!found) {
+        terminal_set_color(COLOR_LIGHT_RED, COLOR_BLACK);
+        terminal_print("\n  bilinmeyen reng. 'color' yaz - siyahi ucun\n");
+        terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+        return;
+    }
+
+    terminal_set_color(chosen, COLOR_BLACK);
+    terminal_print("\n  reng deyishdirildi!\n");
+}
+
 static void cmd_reboot(void) {
     terminal_set_color(COLOR_LIGHT_RED, COLOR_BLACK);
     terminal_print("\nYeniden bashlanir...\n");
@@ -268,6 +314,10 @@ static void execute(void) {
     cmd_sysinfo();}
      else if (streq(buffer, "beep")) {
     cmd_beep();}
+     else if (buffer[0]=='c' && buffer[1]=='o' && buffer[2]=='l' &&
+           buffer[3]=='o' && buffer[4]=='r' &&
+           (buffer[5]==' ' || buffer[5]=='\0')) {
+    cmd_color(buffer);}
 
 else if (buffer[0]=='e' && buffer[1]=='c' && buffer[2]=='h' && buffer[3]=='o' && buffer[4]==' ') {
     cmd_echo(buffer);}
