@@ -65,7 +65,7 @@ void keyboard_init(void) {
     outb(PIC2_DATA, 0x01); io_wait();
 
     /* yalnız klaviatura IRQ-nu aktiv et, qalanını mask et */
-    outb(PIC1_DATA, 0xFD);  /* 11111101 → yalnız IRQ1 açıq */
+    outb(PIC1_DATA, 0xFC);  /* 11111100 → IRQ0 (timer) və IRQ1 (keyboard) açıq */
     outb(PIC2_DATA, 0xFF);  /* hamısı bağlı */
 
     /* IDT-yə klaviatura handler-ı qeyd et */

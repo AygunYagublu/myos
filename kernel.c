@@ -5,6 +5,7 @@
 #include "keyboard.h"
 #include "shell.h"
 #include "kmalloc.h"  
+#include "timer.h"
 
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH   80
@@ -65,7 +66,8 @@ void kernel_main(void) {
     gdt_init();
     terminal_init();
     idt_init();
-    kmalloc_init();    /* ← əlavə et */
+    kmalloc_init();
+    timer_init(100);   /* saniyədə 100 tick */
     keyboard_init();
     shell_init();
     while (1) {}

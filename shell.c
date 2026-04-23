@@ -2,6 +2,7 @@
 #include "kmalloc.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "timer.h"
 
 #define BUFFER_SIZE 256
 
@@ -39,6 +40,7 @@ static void cmd_help(void) {
     terminal_print("  reboot  - yeniden bashlat\n");
     terminal_print("  memstat - yaddash statistikasi\n");
     terminal_print("  memtest - yaddash testi\n");
+    terminal_print("  uptime  - nece saniye ishleyir\n");
 }
 
 static void cmd_about(void) {
@@ -94,7 +96,24 @@ static void execute(void) {
         kmalloc_stats();
     } else if (streq(buffer, "memtest")) {
         cmd_memtest();
+    }  else if (streq(buffer, "uptime")) {
+    terminal_print("\n  Kernel ishleme vaxti: ");
+    uint32_t secs = timer_get_seconds();
+    char buf[16];
+    int i = 14;
+    buf[15] = '\0';
+    if (secs == 0) {
+        terminal_print("0");
     } else {
+        while (secs > 0 && i >= 0) {
+            buf[i--] = '0' + (secs % 10);
+            secs /= 10;
+        }
+        terminal_print(&buf[i + 1]);
+    }
+    terminal_print(" saniye\n");}
+    
+        else {
         terminal_print("  bilinmeyen komanda: ");
         terminal_print(buffer);
         terminal_print("\n  'help' yaz - komandalar ucun");
