@@ -85,6 +85,10 @@ terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 terminal_print("- boot-dan kecen vaxt\n");
 terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
 terminal_print("  echo    ");
+terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+terminal_print("  sysinfo ");
+terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+terminal_print("- sistem melumatı\n");
 terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 terminal_print("- metn goster (echo salam)\n");
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
@@ -142,6 +146,46 @@ static void cmd_date(void) {
     terminal_print("s");
     terminal_set_color(COLOR_WHITE, COLOR_BLACK);
     terminal_print("\n");
+}
+
+static void cmd_sysinfo(void) {
+    terminal_print("\n");
+    terminal_set_color(COLOR_YELLOW, COLOR_BLACK);
+    terminal_print("  -- Sistem Melumat --\n");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Arch    : ");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("x86 (32-bit protected mode)\n");
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Kernel  : ");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("MyOS v0.1\n");
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Timer   : ");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("100 Hz\n");
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Uptime  : ");
+    terminal_set_color(COLOR_YELLOW, COLOR_BLACK);
+    print_num(timer_get_seconds());
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print(" saniye\n");
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Heap    : ");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    terminal_print("1048576 bayt (1MB)\n");
+
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    terminal_print("  Shell   : ");
+    terminal_set_color(COLOR_LIGHT_GREEN, COLOR_BLACK);
+    terminal_print("aktiv\n");
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
 }
 
 static void cmd_reboot(void) {
@@ -210,7 +254,10 @@ static void execute(void) {
     cmd_version();
 } else if (streq(buffer, "date")) {
     cmd_date();
-} else if (buffer[0]=='e' && buffer[1]=='c' && buffer[2]=='h' && buffer[3]=='o' && buffer[4]==' ') {
+}  else if (streq(buffer, "sysinfo")) {
+    cmd_sysinfo();}
+
+else if (buffer[0]=='e' && buffer[1]=='c' && buffer[2]=='h' && buffer[3]=='o' && buffer[4]==' ') {
     cmd_echo(buffer);}
     
     else {
