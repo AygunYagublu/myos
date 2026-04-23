@@ -17,6 +17,55 @@ static size_t terminal_row;
 static size_t terminal_col;
 static uint8_t terminal_color;
 
+static void print_centered(const char* str) {
+    /* 80 sütunlu ekranda ortala */
+    size_t len = 0;
+    while (str[len]) len++;
+    size_t pad = (VGA_WIDTH - len) / 2;
+    for (size_t i = 0; i < pad; i++)
+        terminal_putchar(' ');
+    terminal_print(str);
+    terminal_putchar('\n');
+}
+
+static void boot_screen(void) {
+    terminal_init();
+
+    /* ASCII art — MyOS */
+    terminal_set_color(COLOR_LIGHT_GREEN, COLOR_BLACK);
+    print_centered(" __  __       ____  ____  ");
+    print_centered("|  \\/  |_   _/ __ \\/ ___| ");
+    print_centered("| |\\/| | | | | |  | |     ");
+    print_centered("| |  | | |_| | |__| |___  ");
+    print_centered("|_|  |_|\\__, |\\____/\\____| ");
+    print_centered("        |___/              ");
+
+    terminal_putchar('\n');
+
+    terminal_set_color(COLOR_YELLOW, COLOR_BLACK);
+    print_centered("v0.1 -- Mini x86 OS Kernel");
+
+    terminal_putchar('\n');
+
+    terminal_set_color(COLOR_GRAY, COLOR_BLACK);
+    print_centered("C ve Assembly ile sifirdan yazilmishdir");
+
+    terminal_putchar('\n');
+    terminal_putchar('\n');
+
+    /* sistem bilgisi */
+    terminal_set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+    print_centered("[ GDT OK ] [ IDT OK ] [ PIT OK ] [ MEM OK ]");
+
+    terminal_putchar('\n');
+    terminal_putchar('\n');
+
+    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
+    print_centered("'help' yaz - komandalar ucun");
+
+    terminal_putchar('\n');
+}
+
 static uint8_t make_color(uint8_t fg, uint8_t bg) {
     return fg | (bg << 4);
 }
@@ -90,11 +139,11 @@ void terminal_print(const char* str) {
 
 void kernel_main(void) {
     gdt_init();
-    terminal_init();
     idt_init();
     kmalloc_init();
-    timer_init(100);   /* saniyədə 100 tick */
+    timer_init(100);
     keyboard_init();
+    boot_screen();
     shell_init();
     while (1) {}
 }

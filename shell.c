@@ -250,10 +250,5 @@ void shell_process_char(char c) {
 
 void shell_init(void) {
     buffer_clear();
-    terminal_set_color(COLOR_LIGHT_GREEN, COLOR_BLACK);
-    terminal_print("MyOS v0.1\n");
-    terminal_set_color(COLOR_GRAY, COLOR_BLACK);
-    terminal_print("'help' yaz - komandalar ucun\n");
-    terminal_set_color(COLOR_WHITE, COLOR_BLACK);
     shell_prompt();
 }
