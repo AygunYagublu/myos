@@ -6,6 +6,7 @@
 #include "shell.h"
 #include "kmalloc.h"  
 #include "timer.h"
+#include "terminal.h"
 
 #define VGA_ADDRESS 0xB8000
 #define VGA_WIDTH   80
@@ -55,6 +56,14 @@ void terminal_putchar(char c) {
         terminal_col = 0;
         terminal_row++;
     }
+}
+
+void terminal_set_color(uint8_t fg, uint8_t bg) {
+    terminal_color = make_color(fg, bg);
+}
+
+uint8_t terminal_get_color(void) {
+    return terminal_color;
 }
 
 void terminal_print(const char* str) {
